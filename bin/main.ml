@@ -72,9 +72,8 @@ type statement =
   | If of expression * int
   | Goto of int (*the purpose of a goto is express a while loop as an if statement*)
 
-let (*rec*) evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
+let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
   (*evaluate a statement -> return an updated env and updated pc*)
-  env;pc;
   match stmt with
   | _ -> 0
   (*
@@ -87,12 +86,7 @@ let (*rec*) evaluate_statement env pc stmt = (*env -> hashtable, pc -> program c
   | Goto(pc) -> pc + 1
    *)
 
-let evaluate_program (program:statement list) = 
-  List.length program;;
-
-evaluate_statement;;
-evaluate_program;;
-
+let evaluate_program (program:statement list) = 0
 
 (* (* Reference for how to use hashtables *)
 let vars_hashtable = Hashtbl.create hashtable_size;;
