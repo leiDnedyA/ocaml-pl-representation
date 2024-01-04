@@ -1,0 +1,4 @@
+(executable
+ (public_name racket_example)
+ (name main)
+ (libraries racket_example))
