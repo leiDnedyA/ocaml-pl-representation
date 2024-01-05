@@ -83,6 +83,14 @@ let rec evaluate_expression env expr =
   match expr with
   | Int n -> n
   | Var x -> Hashtbl.find env x
+  | Add (x, y) -> 
+    (evaluate_expression env x) + (evaluate_expression env y)
+  | Subtract (x, y) -> 
+    (evaluate_expression env x) - (evaluate_expression env y)
+  | Multiply (x, y) -> 
+    (evaluate_expression env x) * (evaluate_expression env y)
+  | Divide (x, y) -> 
+    (evaluate_expression env x) / (evaluate_expression env y)
   | _ -> failwith("not yet implemented")
 
 let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
@@ -102,9 +110,19 @@ let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program count
 let evaluate_program (program:statement list) = 0
 
 let vars_hashtable = Hashtbl.create hashtable_size;;
-let test_expr = Int (1);;
+Hashtbl.add vars_hashtable "x" 3;;
 
-Printf.printf "%d\n" (evaluate_expression vars_hashtable test_expr)
+let test_var = Var("x");;
+
+let test_add = Add(Int(20), test_var);;
+let test_subtract = Subtract(Int(20), test_var);;
+let test_multiply = Multiply(Int(20), test_var);;
+let test_divide = Divide(Int(20), test_var);;
+
+Printf.printf "%d\n" (evaluate_expression vars_hashtable test_add);;
+Printf.printf "%d\n" (evaluate_expression vars_hashtable test_subtract);;
+Printf.printf "%d\n" (evaluate_expression vars_hashtable test_multiply);;
+Printf.printf "%d\n" (evaluate_expression vars_hashtable test_divide);;
 
 (* (* Reference for how to use hashtables *)
 let vars_hashtable = Hashtbl.create hashtable_size;;
