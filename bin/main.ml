@@ -58,19 +58,32 @@ type expression =
   | True
   | False
   (* Arithmetic operations *)
-  | Add
-  | Subtract
-  | Multiply
-  | Divide
+  | Add of expression * expression
+  | Subtract of expression * expression
+  | Multiply of expression * expression
+  | Divide of expression * expression
   (* Boolean operations *)
-  | And
-  | Or
-  | Not
+  | And of expression * expression
+  | Or of expression * expression
+  | Not of expression
 
 type statement =
   | Assign of string * expression
   | If of expression * int
   | Goto of int (*the purpose of a goto is express a while loop as an if statement*)
+
+
+(*
+---------------------------
+        evaluation funcs
+---------------------------
+*)
+
+let rec evaluate_expression env expr =
+  match expr with
+  | Int n -> n
+  | Var x -> Hashtbl.find env x
+  | _ -> failwith("not yet implemented")
 
 let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
   (*evaluate a statement -> return an updated env and updated pc*)
@@ -87,6 +100,11 @@ let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program count
    *)
 
 let evaluate_program (program:statement list) = 0
+
+let vars_hashtable = Hashtbl.create hashtable_size;;
+let test_expr = Int (1);;
+
+Printf.printf "%d\n" (evaluate_expression vars_hashtable test_expr)
 
 (* (* Reference for how to use hashtables *)
 let vars_hashtable = Hashtbl.create hashtable_size;;
