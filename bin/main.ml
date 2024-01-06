@@ -79,18 +79,51 @@ type statement =
 ---------------------------
 *)
 
-let rec evaluate_expression env expr =
+let rec evaluate_arithmetic env expr =
   match expr with
   | Int n -> n
-  | Var x -> Hashtbl.find env x
+  | Var x -> evaluate_arithmetic env (Int (Hashtbl.find env x))
   | Add (x, y) -> 
-    (evaluate_expression env x) + (evaluate_expression env y)
-  | Subtract (x, y) -> 
-    (evaluate_expression env x) - (evaluate_expression env y)
-  | Multiply (x, y) -> 
-    (evaluate_expression env x) * (evaluate_expression env y)
-  | Divide (x, y) -> 
-    (evaluate_expression env x) / (evaluate_expression env y)
+      (evaluate_arithmetic env x) + (evaluate_arithmetic env y)
+  | Subtract(x, y) ->
+      (evaluate_arithmetic env x) - (evaluate_arithmetic env y)
+  | Multiply(x, y) ->
+      (evaluate_arithmetic env x) * (evaluate_arithmetic env y)
+  | Divide(x, y) -> 
+      (evaluate_arithmetic env x) / (evaluate_arithmetic env y)
+  | _ -> failwith("Invalid arithmetical expression")
+
+let rec evaluate_boolean env expr =
+  match expr with
+  (*Base cases / Lowest level boolean algebra*)
+  | True | False -> expr
+  | Not (True) -> False
+  | Not (False) -> True
+  | And (False, False) -> False
+  | And (True, False) -> False
+  | And (False, True) -> False
+  | And (True, True) -> True
+  | Or (True, True) -> True
+  | Or (False, True) -> True
+  | Or (True, False) -> True
+  | Or (False, False) -> False
+  (*Cases with variables*)
+  | Not (x) ->
+      evaluate_boolean env (Not (evaluate_boolean env x))
+  | And (x, y) ->
+      evaluate_boolean env (And ((evaluate_boolean env x), (evaluate_boolean env y)))
+  | Or (x, y) ->
+      evaluate_boolean env (Or ((evaluate_boolean env x), (evaluate_boolean env y)))
+  | _ -> failwith("Invalid boolean expression")
+
+let rec evaluate_expression env expr =
+  match expr with
+  | Int i -> i
+  | Var x -> Hashtbl.find env x
+  | Add (_, _) -> evaluate_arithmetic env expr
+  | Subtract (_, _) -> evaluate_arithmetic env expr
+  | Multiply (_, _) -> evaluate_arithmetic env expr
+  | Divide (_, _) -> evaluate_arithmetic env expr
   | _ -> failwith("not yet implemented")
 
 let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
@@ -109,8 +142,28 @@ let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program count
 
 let evaluate_program (program:statement list) = 0
 
+
+(*
+------------------------------------------------------
+       funcs for printing user-defined types
+------------------------------------------------------
+*)
+
+let print_bool b =
+  match b with
+  | True -> print_endline "True"
+  | False -> print_endline "False"
+  | _ -> failwith("not valid boolean")
+
+
+(*
+------------------------------------------------------
+       Test code
+------------------------------------------------------
+*)
+
 let vars_hashtable = Hashtbl.create hashtable_size;;
-Hashtbl.add vars_hashtable "x" 3;;
+Hashtbl.add vars_hashtable "x" 2;;
 
 let test_var = Var("x");;
 
@@ -119,10 +172,14 @@ let test_subtract = Subtract(Int(20), test_var);;
 let test_multiply = Multiply(Int(20), test_var);;
 let test_divide = Divide(Int(20), test_var);;
 
-Printf.printf "%d\n" (evaluate_expression vars_hashtable test_add);;
-Printf.printf "%d\n" (evaluate_expression vars_hashtable test_subtract);;
-Printf.printf "%d\n" (evaluate_expression vars_hashtable test_multiply);;
-Printf.printf "%d\n" (evaluate_expression vars_hashtable test_divide);;
+print_bool (evaluate_boolean vars_hashtable (And (True, (Not True))));;
+
+(*
+Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_add);;
+Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_subtract);;
+Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_multiply);;
+Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_divide);;
+ *)
 
 (* (* Reference for how to use hashtables *)
 let vars_hashtable = Hashtbl.create hashtable_size;;
