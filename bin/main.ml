@@ -132,18 +132,11 @@ let evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (
       )
   | Goto (goto_pc) -> goto_pc
 
-  (*
-  | Assign(str, expr) -> str;expr;0
-      (*Update the env*)
-      (*(env, pc + 1)*)
-  | If (expr, pc) -> expr;pc;1(*Make sure expr is boolean (2 < 5) (true && false)*)
-      (*If expr evaluates to true, jump to pc*)
-      (*Else, increment pc by 1*)
-  | Goto(pc) -> pc + 1
-   *)
-
-let evaluate_program (program:statement list) = 0
-
+let rec evaluate_program env pc (program:statement list) = 
+  if (pc >= List.length program) then
+    0
+  else
+    evaluate_program env (evaluate_statement env pc (List.nth program pc)) program
 
 (*
 ------------------------------------------------------
@@ -170,8 +163,13 @@ Hashtbl.add vars "x" (Int (1));;
 
 let test_var = Var("x");;
 
-let test_stmt = Assign("x", Int(2));;
+let test_program = [
+  If(True, 3);
+  Assign("x", Int(1));
+  Goto(4);
+  Assign("x", Int(3))
+  ];;
 
-evaluate_statement vars 0 test_stmt;;
+evaluate_program vars 0 test_program;;
 
 print_expr vars (Hashtbl.find vars "x")
