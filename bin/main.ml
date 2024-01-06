@@ -39,15 +39,6 @@ let rec eval_statement env pc stmt = # env -> hashtable, pc -> program counter (
 
 (*
 ---------------------------
-        constants
----------------------------
-*)
-
-let hashtable_size = 25;;
-
-
-(*
----------------------------
         datatypes
 ---------------------------
 *)
@@ -82,7 +73,7 @@ type statement =
 let rec evaluate_arithmetic env expr =
   match expr with
   | Int n -> n
-  | Var x -> evaluate_arithmetic env (Int (Hashtbl.find env x))
+  | Var x -> evaluate_arithmetic env (Hashtbl.find env x)
   | Add (x, y) -> 
       (evaluate_arithmetic env x) + (evaluate_arithmetic env y)
   | Subtract(x, y) ->
@@ -118,12 +109,13 @@ let rec evaluate_boolean env expr =
 
 let rec evaluate_expression env expr =
   match expr with
-  | Int i -> i
-  | Var x -> Hashtbl.find env x
-  | Add (_, _) -> evaluate_arithmetic env expr
-  | Subtract (_, _) -> evaluate_arithmetic env expr
-  | Multiply (_, _) -> evaluate_arithmetic env expr
-  | Divide (_, _) -> evaluate_arithmetic env expr
+  | True|False -> expr
+  | Int i -> Int i
+  | Var x -> evaluate_expression env (Hashtbl.find env x)
+  | Add (_, _) -> Int (evaluate_arithmetic env expr)
+  | Subtract (_, _) -> Int (evaluate_arithmetic env expr)
+  | Multiply (_, _) -> Int (evaluate_arithmetic env expr)
+  | Divide (_, _) -> Int (evaluate_arithmetic env expr)
   | _ -> failwith("not yet implemented")
 
 let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
@@ -149,11 +141,12 @@ let evaluate_program (program:statement list) = 0
 ------------------------------------------------------
 *)
 
-let print_bool b =
-  match b with
-  | True -> print_endline "True"
+let rec print_expr env expr =
+  match expr with
+  | Int x -> Printf.printf "%d\n" x
   | False -> print_endline "False"
-  | _ -> failwith("not valid boolean")
+  | True -> print_endline "True"
+  | _ -> print_expr env (evaluate_expression env expr)
 
 
 (*
@@ -162,8 +155,8 @@ let print_bool b =
 ------------------------------------------------------
 *)
 
-let vars_hashtable = Hashtbl.create hashtable_size;;
-Hashtbl.add vars_hashtable "x" 2;;
+let vars = Hashtbl.create 25;;
+Hashtbl.add vars "x" (Int (1));;
 
 let test_var = Var("x");;
 
@@ -172,7 +165,7 @@ let test_subtract = Subtract(Int(20), test_var);;
 let test_multiply = Multiply(Int(20), test_var);;
 let test_divide = Divide(Int(20), test_var);;
 
-print_bool (evaluate_boolean vars_hashtable (And (True, (Not True))));;
+print_expr vars (Add (Int (1), test_var));;
 
 (*
 Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_add);;
