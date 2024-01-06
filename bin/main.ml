@@ -53,6 +53,12 @@ type expression =
   | Subtract of expression * expression
   | Multiply of expression * expression
   | Divide of expression * expression
+  (* Mathematical inequalities *)
+  | Eq of expression * expression (* Equal to *)
+  | Gt of expression * expression (* Greater than *)
+  | Lt of expression * expression (* Less than *)
+  | Gte of expression * expression (*Greater than or equal to *)
+  | Lte of expression * expression (* Less than or equal to *)
   (* Boolean operations *)
   | And of expression * expression
   | Or of expression * expression
@@ -112,11 +118,31 @@ let rec evaluate_expression env expr =
   | True|False -> expr
   | Int i -> Int i
   | Var x -> evaluate_expression env (Hashtbl.find env x)
-  | Add (_, _) -> Int (evaluate_arithmetic env expr)
-  | Subtract (_, _) -> Int (evaluate_arithmetic env expr)
-  | Multiply (_, _) -> Int (evaluate_arithmetic env expr)
-  | Divide (_, _) -> Int (evaluate_arithmetic env expr)
-  | _ -> failwith("not yet implemented")
+  | Add (_, _) | Subtract (_, _) | Multiply (_, _) | Divide (_, _)->
+      Int (evaluate_arithmetic env expr)
+  | Eq (_, _) | Gt (_, _) | Lt (_, _) | Gte (_, _) | Lte (_, _) ->
+      evaluate_inequality env expr
+  | And (_, _) | Or (_, _) | Not _ -> evaluate_boolean env expr
+
+and evaluate_inequality env expr =
+  match expr with
+  | Eq (Int x, Int y) -> if x == y then True else False
+  | Gt (Int x, Int y) -> if x > y then True else False
+  | Lt (Int x, Int y) -> if x < y then True else False
+  | Gte (Int x, Int y) -> if x >= y then True else False
+  | Lte (Int x, Int y) -> if x <= y then True else False
+  | Eq (x, y) ->
+      evaluate_inequality env (Eq ((evaluate_expression env x), (evaluate_expression env y)))
+  | Gt (x, y) ->
+      evaluate_inequality env (Gt ((evaluate_expression env x), (evaluate_expression env y)))
+  | Lt (x, y) ->
+      evaluate_inequality env (Lt ((evaluate_expression env x), (evaluate_expression env y)))
+  | Gte (x, y) ->
+      evaluate_inequality env (Gte ((evaluate_expression env x), (evaluate_expression env y)))
+  | Lte (x, y) ->
+      evaluate_inequality env (Lte ((evaluate_expression env x), (evaluate_expression env y)))
+  | _ -> failwith("Invalid inequality expression")
+
 
 let evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
   (*evaluate a statement -> return an updated env and updated pc*)
@@ -171,5 +197,7 @@ let test_program = [
   ];;
 
 evaluate_program vars 0 test_program;;
+
+print_expr vars (evaluate_expression vars (Gt(Int(1), Int(0)))) ;;
 
 print_expr vars (Hashtbl.find vars "x")
