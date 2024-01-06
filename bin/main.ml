@@ -61,7 +61,7 @@ type expression =
 type statement =
   | Assign of string * expression
   | If of expression * int
-  | Goto of int (*the purpose of a goto is express a while loop as an if statement*)
+  | Goto of int 
 
 
 (*
@@ -118,10 +118,20 @@ let rec evaluate_expression env expr =
   | Divide (_, _) -> Int (evaluate_arithmetic env expr)
   | _ -> failwith("not yet implemented")
 
-let rec evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
+let evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
   (*evaluate a statement -> return an updated env and updated pc*)
   match stmt with
-  | _ -> 0
+  | Assign (str, expr) ->
+      Hashtbl.replace env str expr; pc + 1
+  | If (expr, if_pc) ->
+      (
+      match (evaluate_expression env expr) with
+      | True -> if_pc
+      | False -> pc + 1
+      | _ -> failwith("Invalid boolean result")
+      )
+  | Goto (goto_pc) -> goto_pc
+
   (*
   | Assign(str, expr) -> str;expr;0
       (*Update the env*)
@@ -137,7 +147,7 @@ let evaluate_program (program:statement list) = 0
 
 (*
 ------------------------------------------------------
-       funcs for printing user-defined types
+       function for printing user-defined types
 ------------------------------------------------------
 *)
 
@@ -160,22 +170,8 @@ Hashtbl.add vars "x" (Int (1));;
 
 let test_var = Var("x");;
 
-let test_add = Add(Int(20), test_var);;
-let test_subtract = Subtract(Int(20), test_var);;
-let test_multiply = Multiply(Int(20), test_var);;
-let test_divide = Divide(Int(20), test_var);;
+let test_stmt = Assign("x", Int(2));;
 
-print_expr vars (Add (Int (1), test_var));;
+evaluate_statement vars 0 test_stmt;;
 
-(*
-Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_add);;
-Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_subtract);;
-Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_multiply);;
-Printf.printf "%d\n" (evaluate_arithmetic vars_hashtable test_divide);;
- *)
-
-(* (* Reference for how to use hashtables *)
-let vars_hashtable = Hashtbl.create hashtable_size;;
-let lookup_var name = Hashtbl.find vars_hashtable name;;
-let create_var name value = Hashtbl.add vars_hashtable name value;;
-*)
+print_expr vars (Hashtbl.find vars "x")
