@@ -1,0 +1,111 @@
+# dune build --profile release
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: /home/ayden/Projects/tiago/symbolic_execution
+# Auto-detected concurrency: 16
+$ /home/ayden/.opam/test/bin/ocamlc.opt -config > /tmp/dune_f1763f_output
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Release
+#  ; merlin = true
+#  ; for_host = None
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; ocaml_bin = External "/home/ayden/.opam/test/bin"
+#  ; ocaml = Ok External "/home/ayden/.opam/test/bin/ocaml"
+#  ; ocamlc = External "/home/ayden/.opam/test/bin/ocamlc.opt"
+#  ; ocamlopt = Ok External "/home/ayden/.opam/test/bin/ocamlopt.opt"
+#  ; ocamldep = Ok External "/home/ayden/.opam/test/bin/ocamldep.opt"
+#  ; ocamlmklib = Ok External "/home/ayden/.opam/test/bin/ocamlmklib.opt"
+#  ; installed_env =
+#      map
+#        { "INSIDE_DUNE" :
+#            "/home/ayden/Projects/tiago/symbolic_execution/_build/default"
+#        ; "OCAML_COLOR" : "always"
+#        ; "OPAMCOLOR" : "always"
+#        }
+#  ; findlib_paths = [ External "/home/ayden/.opam/test/lib" ]
+#  ; ocaml_config =
+#      { version = "4.14.0"
+#      ; standard_library_default = "/home/ayden/.opam/test/lib/ocaml"
+#      ; standard_library = "/home/ayden/.opam/test/lib/ocaml"
+#      ; standard_runtime = "the_standard_runtime_variable_was_deleted"
+#      ; ccomp_type = "cc"
+#      ; c_compiler = "gcc"
+#      ; ocamlc_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
+#      ; ocamlopt_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
+#      ; bytecomp_c_compiler =
+#          [ "gcc"
+#          ; "-O2"
+#          ; "-fno-strict-aliasing"
+#          ; "-fwrapv"
+#          ; "-pthread"
+#          ; "-fPIC"
+#          ; "-D_FILE_OFFSET_BITS=64"
+#          ]
+#      ; bytecomp_c_libraries = [ "-lm"; "-lpthread" ]
+#      ; native_c_compiler =
+#          [ "gcc"
+#          ; "-O2"
+#          ; "-fno-strict-aliasing"
+#          ; "-fwrapv"
+#          ; "-pthread"
+#          ; "-fPIC"
+#          ; "-D_FILE_OFFSET_BITS=64"
+#          ]
+#      ; native_c_libraries = [ "-lm" ]
+#      ; native_pack_linker = [ "ld"; "-r"; "-o" ]
+#      ; cc_profile = []
+#      ; architecture = "amd64"
+#      ; model = "default"
+#      ; int_size = 63
+#      ; word_size = 64
+#      ; system = "linux"
+#      ; asm = [ "as" ]
+#      ; asm_cfi_supported = true
+#      ; with_frame_pointers = false
+#      ; ext_exe = ""
+#      ; ext_obj = ".o"
+#      ; ext_asm = ".s"
+#      ; ext_lib = ".a"
+#      ; ext_dll = ".so"
+#      ; os_type = "Unix"
+#      ; default_executable_name = "a.out"
+#      ; systhread_supported = true
+#      ; host = "x86_64-pc-linux-gnu"
+#      ; target = "x86_64-pc-linux-gnu"
+#      ; profiling = false
+#      ; flambda = false
+#      ; spacetime = false
+#      ; safe_string = true
+#      ; exec_magic_number = "Caml1999X031"
+#      ; cmi_magic_number = "Caml1999I031"
+#      ; cmo_magic_number = "Caml1999O031"
+#      ; cma_magic_number = "Caml1999A031"
+#      ; cmx_magic_number = "Caml1999Y031"
+#      ; cmxa_magic_number = "Caml1999Z031"
+#      ; ast_impl_magic_number = "Caml1999M031"
+#      ; ast_intf_magic_number = "Caml1999N031"
+#      ; cmxs_magic_number = "Caml1999D031"
+#      ; cmt_magic_number = "Caml1999T031"
+#      ; natdynlink_supported = true
+#      ; supports_shared_libraries = true
+#      ; windows_unicode = false
+#      }
+#  ; instrument_with = []
+#  }
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlc.opt -w -40 -g -bin-annot -I test/.symbolic_execution.eobjs/byte -no-alias-deps -o test/.symbolic_execution.eobjs/byte/dune__exe__Symbolic_execution.cmi -c -intf test/symbolic_execution.mli)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlc.opt -w -40 -w -49 -nopervasives -nostdlib -g -bin-annot -I lib/.symbolic_execution.objs/byte -no-alias-deps -o lib/.symbolic_execution.objs/byte/symbolic_execution.cmo -c -impl lib/symbolic_execution.ml-gen)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlc.opt -w -40 -g -a -o lib/symbolic_execution.cma lib/.symbolic_execution.objs/byte/symbolic_execution.cmo)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlc.opt -w -40 -g -bin-annot -I bin/.main.eobjs/byte -I lib/.symbolic_execution.objs/byte -no-alias-deps -o bin/.main.eobjs/byte/dune__exe__Main.cmi -c -intf bin/main.mli)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -w -49 -nopervasives -nostdlib -g -I lib/.symbolic_execution.objs/byte -I lib/.symbolic_execution.objs/native -intf-suffix .ml-gen -no-alias-deps -o lib/.symbolic_execution.objs/native/symbolic_execution.cmx -c -impl lib/symbolic_execution.ml-gen)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -g -I test/.symbolic_execution.eobjs/byte -I test/.symbolic_execution.eobjs/native -intf-suffix .ml -no-alias-deps -o test/.symbolic_execution.eobjs/native/dune__exe__Symbolic_execution.cmx -c -impl test/symbolic_execution.ml)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -g -a -o lib/symbolic_execution.cmxa lib/.symbolic_execution.objs/native/symbolic_execution.cmx)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I lib/.symbolic_execution.objs/byte -I lib/.symbolic_execution.objs/native -intf-suffix .ml -no-alias-deps -o bin/.main.eobjs/native/dune__exe__Main.cmx -c -impl bin/main.ml)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -g -shared -linkall -I lib -o lib/symbolic_execution.cmxs lib/symbolic_execution.cmxa)
+$ (cd _build/default && /home/ayden/.opam/test/bin/ocamlopt.opt -w -40 -g -o test/symbolic_execution.exe test/.symbolic_execution.eobjs/native/dune__exe__Symbolic_execution.cmx)

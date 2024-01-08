@@ -1,0 +1,4 @@
+(lang dune 3.11)
+(name symbolic_execution)
+(sections (lib .) (bin ../../bin))
+(files (lib (META dune-package opam)) (bin (symbolic_execution)))
