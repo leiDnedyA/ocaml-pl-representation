@@ -1,8 +1,0 @@
-lib: [
-  "_build/install/default/lib/symbolic_execution/META"
-  "_build/install/default/lib/symbolic_execution/dune-package"
-  "_build/install/default/lib/symbolic_execution/opam"
-]
-bin: [
-  "_build/install/default/bin/symbolic_execution"
-]
