@@ -1,2 +1,3 @@
 (library
- (name racket_example))
+ (name lib)
+ (public_name racket_example))
