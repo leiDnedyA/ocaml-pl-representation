@@ -90,28 +90,28 @@ let rec evaluate_arithmetic env expr =
       (evaluate_arithmetic env x) / (evaluate_arithmetic env y)
   | _ -> failwith("Invalid arithmetical expression")
 
-let rec evaluate_boolean env expr =
-  match expr with
-  (*Base cases / Lowest level boolean algebra*)
-  | True | False -> expr
-  | Not (True) -> False
-  | Not (False) -> True
-  | And (False, False) -> False
-  | And (True, False) -> False
-  | And (False, True) -> False
-  | And (True, True) -> True
-  | Or (True, True) -> True
-  | Or (False, True) -> True
-  | Or (True, False) -> True
-  | Or (False, False) -> False
-  (*Cases with variables*)
-  | Not (x) ->
-      evaluate_boolean env (Not (evaluate_boolean env x))
-  | And (x, y) ->
-      evaluate_boolean env (And ((evaluate_boolean env x), (evaluate_boolean env y)))
-  | Or (x, y) ->
-      evaluate_boolean env (Or ((evaluate_boolean env x), (evaluate_boolean env y)))
-  | _ -> failwith("Invalid boolean expression")
+(* let rec evaluate_boolean env expr = *)
+(*   match expr with *)
+(*   (*Base cases / Lowest level boolean algebra*) *)
+(*   | True | False -> expr *)
+(*   | Not (True) -> False *)
+(*   | Not (False) -> True *)
+(*   | And (False, False) -> False *)
+(*   | And (True, False) -> False *)
+(*   | And (False, True) -> False *)
+(*   | And (True, True) -> True *)
+(*   | Or (True, True) -> True *)
+(*   | Or (False, True) -> True *)
+(*   | Or (True, False) -> True *)
+(*   | Or (False, False) -> False *)
+(*   (*Cases with variables*) *)
+(*   | Not (x) -> *)
+(*       evaluate_boolean env (Not (evaluate_boolean env x)) *)
+(*   | And (x, y) -> *)
+(*       evaluate_boolean env (And ((evaluate_boolean env x), (evaluate_boolean env y))) *)
+(*   | Or (x, y) -> *)
+(*       evaluate_boolean env (Or ((evaluate_boolean env x), (evaluate_boolean env y))) *)
+(*   | _ -> failwith("Invalid boolean expression") *)
 
 let rec evaluate_expression env expr =
   match expr with
@@ -123,7 +123,6 @@ let rec evaluate_expression env expr =
   | Eq (_, _) | Gt (_, _) | Lt (_, _) | Gte (_, _) | Lte (_, _) ->
       evaluate_inequality env expr
   | And (_, _) | Or (_, _) | Not _ -> evaluate_boolean env expr
-
 and evaluate_inequality env expr =
   match expr with
   | Eq (Int x, Int y) -> if x == y then True else False
@@ -142,7 +141,28 @@ and evaluate_inequality env expr =
   | Lte (x, y) ->
       evaluate_inequality env (Lte ((evaluate_expression env x), (evaluate_expression env y)))
   | _ -> failwith("Invalid inequality expression")
-
+and evaluate_boolean env expr =
+  match expr with
+  (*Base cases / Lowest level boolean algebra*)
+  | True | False -> expr
+  | Not (True) -> False
+  | Not (False) -> True
+  | And (False, False) -> False
+  | And (True, False) -> False
+  | And (False, True) -> False
+  | And (True, True) -> True
+  | Or (True, True) -> True
+  | Or (False, True) -> True
+  | Or (True, False) -> True
+  | Or (False, False) -> False
+  (*Cases with variables*)
+  | Not (x) ->
+      evaluate_boolean env (Not (evaluate_expression env x))
+  | And (x, y) ->
+      evaluate_boolean env (And ((evaluate_expression env x), (evaluate_expression env y)))
+  | Or (x, y) ->
+      evaluate_boolean env (Or ((evaluate_expression env x), (evaluate_expression env y)))
+  | _ -> failwith("Invalid boolean expression")
 
 let evaluate_statement env pc stmt = (*env -> hashtable, pc -> program counter (line number), stmt -> statement*)
   (*evaluate a statement -> return an updated env and updated pc*)
