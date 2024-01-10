@@ -52,6 +52,11 @@ let rec evaluate_arithmetic env expr =
       (evaluate_arithmetic env x) / (evaluate_arithmetic env y)
   | _ -> failwith("Invalid arithmetical expression")
 
+let expression_of_bool b =
+  match b with
+  | true -> True
+  | false -> False
+
 let rec evaluate_expression env expr =
   match expr with
   | True|False -> expr
@@ -64,21 +69,16 @@ let rec evaluate_expression env expr =
   | And (_, _) | Or (_, _) | Not _ -> evaluate_boolean env expr
 and evaluate_inequality env expr =
   match expr with
-  | Eq (Int x, Int y) -> if x == y then True else False
-  | Gt (Int x, Int y) -> if x > y then True else False
-  | Lt (Int x, Int y) -> if x < y then True else False
-  | Gte (Int x, Int y) -> if x >= y then True else False
-  | Lte (Int x, Int y) -> if x <= y then True else False
   | Eq (x, y) ->
-      evaluate_inequality env (Eq ((evaluate_expression env x), (evaluate_expression env y)))
+      expression_of_bool ((evaluate_expression env x) == (evaluate_expression env y))
   | Gt (x, y) ->
-      evaluate_inequality env (Gt ((evaluate_expression env x), (evaluate_expression env y)))
+      expression_of_bool ((evaluate_expression env x) > (evaluate_expression env y))
   | Lt (x, y) ->
-      evaluate_inequality env (Lt ((evaluate_expression env x), (evaluate_expression env y)))
+      expression_of_bool ((evaluate_expression env x) < (evaluate_expression env y))
   | Gte (x, y) ->
-      evaluate_inequality env (Gte ((evaluate_expression env x), (evaluate_expression env y)))
+      expression_of_bool ((evaluate_expression env x) >= (evaluate_expression env y))
   | Lte (x, y) ->
-      evaluate_inequality env (Lte ((evaluate_expression env x), (evaluate_expression env y)))
+      expression_of_bool ((evaluate_expression env x) <= (evaluate_expression env y))
   | _ -> failwith("Invalid inequality expression")
 and evaluate_boolean env expr =
   match expr with
