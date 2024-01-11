@@ -7,6 +7,7 @@ let bool1 = Boolean.mk_val mk true;;
 let bool2 = Boolean.mk_val mk false;;
 
 let expr1 = Boolean.mk_or mk [bool1;bool2];;
+let expr2 = Boolean.mk_and mk [bool1;bool2];;
 
 let bool_of_z3 e = Z3.Boolean.is_true e;;
 
@@ -16,3 +17,4 @@ let solve_bool_expression expr mk =
     bool_of_z3 (Option.get (Model.eval model expr true));;
 
 Printf.printf "%b\n" (solve_bool_expression expr1 mk);;
+Printf.printf "%b\n" (solve_bool_expression expr2 mk);;
