@@ -15,4 +15,3 @@ let rec print_expr env expr =
   | True -> print_endline "True"
   | _ -> print_expr env (evaluate_expression env expr)
 
-

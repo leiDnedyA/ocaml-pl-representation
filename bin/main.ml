@@ -2,7 +2,6 @@ open Z3
 
 let mk = mk_context [];;
 
-
 let bool1 = Boolean.mk_val mk true;;
 let bool2 = Boolean.mk_val mk false;;
 
